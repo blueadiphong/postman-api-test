@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "6c280091-de82-48da-980f-6553bb8c181e",
+		"name": "recev_account_detail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45920143"
+	},
+	"item": [
+		{
+			"name": "NB/account-detail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test('Email must be in a valid format', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, 'Email format is invalid');\r",
+							"})\r",
+							"\r",
+							"pm.test('Mobile number is in a valid format', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.mobileNo).to.exist;\r",
+							"    pm.expect(responseData.mobileNo).to.match(/^\\+?[0-9]{10,15}$/, 'Mobile number should be in a valid format (10 to 15 digits with optional \\'+\\' prefix)');\r",
+							"})\r",
+							"\r",
+							"pm.test('ReceivingFcdAccountList is an array and contains expected elements', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.receivingFcdAccountList).to.be.an('array');\r",
+							"    pm.expect(responseData.receivingFcdAccountList).to.have.lengthOf.at.least(0);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const requestBody = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"// เก็บ flag ไว้ใช้ต่อ\r",
+							"const isKcifNoPresent = requestBody.kcifNo !== null && requestBody.kcifNo !== undefined;\r",
+							"pm.environment.set(\"isKcifNoValid\", isKcifNoPresent);\r",
+							"\r",
+							"// ---------------------\r",
+							"// SCENARIO 1: kcifNo ต้องมี (Valid case)\r",
+							"// ---------------------\r",
+							"pm.test(\"kcifNo should be present in request body\", function () {\r",
+							"    pm.expect(requestBody.kcifNo, \"kcifNo is missing\").to.not.be.oneOf([null, undefined]);\r",
+							"});\r",
+							"\r",
+							"// ---------------------\r",
+							"// SCENARIO 2: kcifNo ไม่มี (Invalid case)\r",
+							"// ---------------------\r",
+							"pm.test(\"If kcifNo is missing, API should return 400 or 409\", function () {\r",
+							"    if (!isKcifNoPresent) {\r",
+							"        pm.expect(pm.response.code, \"Expected 400/404 when kcifNo missing\").to.be.oneOf([400, 409]);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "Ev6jrsadkk48vpsp1suMwQnfJgiQZNaa"
+					},
+					{
+						"key": "X-Source",
+						"value": "KTB"
+					},
+					{
+						"key": "X-Channel",
+						"value": "NEXT"
+					},
+					{
+						"key": "X-Channel-ID",
+						"value": "NB"
+					},
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "X-Correlation-ID",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"kcifNo\": \"K1000001922\",\r\n    \"accountId\": \"AC4000000024029\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/v1/account-detail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"v1",
+						"account-detail"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:8082/api/v1/kcif/inquiry' \\\r\n--header 'X-Api-Key: Ev6jrsadkk48vpsp1suMwQnfJgiQZNaa' \\\r\n--header 'X-Source: KTB' \\\r\n--header 'X-Channel: NEXT' \\\r\n--header 'X-Channel-ID: NB' \\\r\n--header 'X-Request-ID: 00907471-6e17-4622-b967-f18948749d56' \\\r\n--header 'X-Correlation-ID: 9df3251b-d3aa-4291-a6c0-ed0a3ac102fc' \\\r\n--header 'Content-Type: application/json' \\\r\n--data '{\r\n  \"accountId\": null,\r\n  \"kcifNo\": \"K0000073686\"\r\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "ES/account-detail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test('Email must be in a valid format', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, 'Email format is invalid');\r",
+							"})\r",
+							"\r",
+							"pm.test('Mobile number is in a valid format', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.mobileNo).to.exist;\r",
+							"    pm.expect(responseData.mobileNo).to.match(/^\\+?[0-9]{10,15}$/, 'Mobile number should be in a valid format (10 to 15 digits with optional \\'+\\' prefix)');\r",
+							"})\r",
+							"\r",
+							"pm.test('ReceivingFcdAccountList is an array and contains expected elements', function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.receivingFcdAccountList).to.be.an('array');\r",
+							"    pm.expect(responseData.receivingFcdAccountList).to.have.lengthOf.at.least(0);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "Ev6jrsadkk48vpsp1suMwQnfJgiQZNaa"
+					},
+					{
+						"key": "X-Source",
+						"value": "KTB"
+					},
+					{
+						"key": "X-Channel",
+						"value": "ESOL"
+					},
+					{
+						"key": "X-Channel-ID",
+						"value": "ES"
+					},
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "X-Correlation-ID",
+						"value": "{{$guid}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"kcifNo\": \"K1000001924\",\r\n    \"accountId\": \"AC2000000024045\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8084/api/v1/account-detail",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"v1",
+						"account-detail"
+					]
+				},
+				"description": "Generated from cURL: curl --location 'http://localhost:8082/api/v1/kcif/inquiry' \\\r\n--header 'X-Api-Key: Ev6jrsadkk48vpsp1suMwQnfJgiQZNaa' \\\r\n--header 'X-Source: KTB' \\\r\n--header 'X-Channel: NEXT' \\\r\n--header 'X-Channel-ID: NB' \\\r\n--header 'X-Request-ID: 00907471-6e17-4622-b967-f18948749d56' \\\r\n--header 'X-Correlation-ID: 9df3251b-d3aa-4291-a6c0-ed0a3ac102fc' \\\r\n--header 'Content-Type: application/json' \\\r\n--data '{\r\n  \"accountId\": null,\r\n  \"kcifNo\": \"K0000073686\"\r\n}'"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
