@@ -28,9 +28,9 @@ jobs:
       # 4️⃣ Run Postman Collection
       - name: Run Postman Collection
         run: |
-          newman run tests/postman/recev_account_detail.postman_collection.json \
+          newman run tester/postman/recev_account_detail.postman_collection.json \
           --reporters cli,html \
-          --reporter-html-export report.html
+          --reporter-html-export report.html  
 
       # 5️⃣ Upload HTML report as artifact
       - name: Upload HTML Report
