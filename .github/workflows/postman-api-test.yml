@@ -1,6 +1,6 @@
 - name: Run Postman Collection
   run: |
-    newman run tests/postman/collection.json -e tests/postman/environment.json \
+    newman run tests/postman/recev_account_detail.postman_collection.json \
     --reporters cli,html \
     --reporter-html-export report.html
 
