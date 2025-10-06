@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "a7ca999e-bfaa-4ea1-a276-a7aa0fc0f553",
+		"name": "TestAutomed",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45920143"
+	},
+	"item": [
+		{
+			"name": "List of all objects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    });\r",
+							"    "
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Single object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.test(\"verify id\", function () {\r",
+							"        pm.expect(jsonData.id).to.eql(\"7\");\r",
+							"    });\r",
+							"\r",
+							"pm.test(\"verify name\", function () {\r",
+							"   pm.expect(jsonData.name).to.eql(\"Apple MacBook Pro 16\");\r",
+							"});\r",
+							"\r",
+							"// Test for the existence of required fields\r",
+							"pm.test(\"Response contains required fields: id, name, and data\",\r",
+							" function () {\r",
+							"    pm.expect(jsonData).to.have.all.keys('id', 'name', 'data');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Test for the existence of required fields in the data object\r",
+							"pm.test(\"Response schema includes all required fields\", function () {\r",
+							"    pm.expect(jsonData.data).to.have.all.keys('year', 'price', 'CPU model', 'Hard disk size');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/7",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Object",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Function to generate a unique serial number for the device\r",
+							"function generateSerialNumber() {\r",
+							"    const prefix = 'SN'; // Prefix for the serial number\r",
+							"    const timestamp = Date.now().toString(36); // Current timestamp in base-36\r",
+							"    const randomSuffix = Math.random().toString(36).substring(2, 8); // Random string of 6 characters\r",
+							"    return `${prefix}-${timestamp}-${randomSuffix}`; // Combining prefix, timestamp, and random suffix\r",
+							"}\r",
+							"console.log()\r",
+							"\r",
+							"// Set the generated serial number to an environment variable\r",
+							"pm.collectionVariables.set('saleBranchCode', generateSerialNumber());\r",
+							"\r",
+							"//pm.collectionVariables(\"idObject\",pm.response.body.json().id)\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"idObject\",pm.response.json().id) //ประกาศตัวแปล\r",
+							"\r",
+							"//console.log(pm.response.json().id) ;\r",
+							"//console.log(pm.response.json().name)"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\": \"Apple MacBook Pro 16\",\r\n   \"data\": {\r\n      \"year\": 2019,\r\n      \"price\": 1849.99,\r\n      \"CPU model\": \"Intel Core i9 58889\",\r\n      \"Hard disk size\": \"1 TB\",\r\n      \"saleBranchCode\": \"{{saleBranchCode}}\"\r\n   }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.restful-api.dev/objects",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete object",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://api.restful-api.dev/objects/{{idObject}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"restful-api",
+						"dev"
+					],
+					"path": [
+						"objects",
+						"{{idObject}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {\r",
+					"    pm.response.to.have.status(200);\r",
+					"    });"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "deviceSerialNumber",
+			"value": ""
+		},
+		{
+			"key": "saleBranchCode",
+			"value": ""
+		},
+		{
+			"key": "idObject",
+			"value": ""
+		}
+	]
+}
