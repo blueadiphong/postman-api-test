@@ -1,0 +1,40 @@
+name: Postman API Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  run-postman:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 3️⃣ Install Newman
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-html
+
+      # 4️⃣ Run Postman Collection
+      - name: Run Postman Collection
+        run: |
+          newman run tester/postman/TestAutomed.postman_collection.json \
+          --reporters cli,html \
+          --reporter-html-export report.html
+
+      # 5️⃣ Upload HTML report as artifact
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: postman-report
+          path: report.html
